@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Video Quiz for Kids</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #fffae5; /* Light yellow background */
+        }
+
+        .container {
+            margin: 20px auto;
+            width: 80%;
+            border: 5px solid #ffc107;
+            border-radius: 15px;
+            background-color: #fff8dc;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff5722; /* Vibrant orange color for the title */
+        }
+
+        video {
+            width: 100%;
+            border: 3px solid #00bcd4;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quiz {
+            margin-top: 20px;
+            display: none;
+            padding: 10px;
+            border: 2px dashed #ff9800;
+            border-radius: 10px;
+            background-color: #fdf3d0;
+        }
+
+        .question {
+            margin: 10px 0;
+            font-size: 20px;
+            color: #4caf50; /* Green for the question text */
+        }
+
+        .options button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background-color: #29b6f6;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .options button:hover {
+            background-color: #0288d1;
+            transform: scale(1.1);
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 22px;
+            color: #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Video Quiz for Kids</h1>
+        <video id="video" controls>
+            <source id="videoSource" src="video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="quiz" id="quiz">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What did Ali smell in the garden?",
+                options: ["A cookie", "A rose", "A tree"],
+                correct: 1
+            },
+            {
+                question: "What did Ali see flying near the flowers?",
+                options: ["A bird", "A butterfly", "A squirrel"],
+                correct: 1
+            },
+            {
+                question: "What did Ali hear in the garden?",
+                options: ["The sound of cars", "Birds singing", "Water flowing"],
+                correct: 1
+            }
+        ];
+
+        const correctSound = new Audio('correct.mp3'); // Correct answer sound
+        const wrongSound = new Audio('wrong.mp3'); // Wrong answer sound
+
+        const video = document.getElementById('video');
+        const quiz = document.getElementById('quiz');
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const resultEl = document.getElementById('result');
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        video.addEventListener('ended', () => {
+            showQuestion();
+        });
+
+        function showQuestion() {
+            quiz.style.display = 'block';
+            questionEl.textContent = quizData[currentQuestion].question;
+            optionsEl.innerHTML = '';
+
+            quizData[currentQuestion].options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(index);
+                optionsEl.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selected) {
+            if (selected === quizData[currentQuestion].correct) {
+                correctSound.play();
+                score++;
+                alert("Correct! 🎉");
+            } else {
+                wrongSound.play();
+                alert("Oops! Try again. 😞");
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < quizData.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quiz.style.display = 'none';
+            resultEl.textContent = `You scored ${score} out of ${quizData.length}! Awesome job!`;
+        }
+    </script>
+</body>
+</html>
